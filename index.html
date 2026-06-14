@@ -6,110 +6,745 @@
   <title>Lydia Yeeun Choi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@300;400;500&family=Bricolage+Grotesque:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent: #3a5aaa;
+      --accent-light: #5a7acc;
+      --bg: #f5f5f5;
+      --ink: #111111;
+      --muted: #888888;
+      --border: #e0e0e0;
+      --card: #ececec;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+
+    /* INTRO */
+    #intro {
+      position: fixed; inset: 0; background: #0a0c14;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; transition: opacity 0.8s ease;
+    }
+    #intro.out { opacity: 0; pointer-events: none; }
+    #iname {
+      font-family: 'Inter', sans-serif; font-size: clamp(20px, 4vw, 36px);
+      font-weight: 300; color: #f5f5f5; letter-spacing: 0.1em; text-align: center;
+    }
+    #iname em { font-style: normal; color: var(--accent); }
+    #cur {
+      display: inline-block; width: 2px; height: 0.9em;
+      background: var(--accent); margin-left: 3px; vertical-align: middle;
+      animation: blink 0.7s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+    /* PAGES */
+    .page { display: none; min-height: 100vh; }
+    .page.active { display: block; }
+
+    /* HOME */
+    #home { position: relative; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+    .home-photo { position: absolute; inset: 0; z-index: 0; }
+    .home-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: brightness(0.5) contrast(1.05); }
+    .home-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to bottom, rgba(10,12,20,0.5) 0%, rgba(10,12,20,0.1) 30%, rgba(10,12,20,0.1) 55%, rgba(10,12,20,0.75) 100%);
+    }
+    .home-ui { position: relative; z-index: 2; height: 100vh; display: flex; flex-direction: column; padding: 28px 40px; }
+    .home-wordmark { font-size: 11px; font-weight: 400; color: rgba(245,245,245,0.55); letter-spacing: 0.1em; }
+    .home-center { flex: 1; display: flex; align-items: center; justify-content: flex-end; }
+    .home-nav { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+    .home-nav-item {
+      font-size: clamp(22px, 3vw, 34px); font-weight: 400;
+      color: rgba(245,245,245,0.38); cursor: pointer; text-align: right; line-height: 1.3;
+      transition: color 0.2s, transform 0.2s; background: none; border: none;
+      font-family: 'Inter', sans-serif; display: block;
+    }
+    .home-nav-item:hover { color: #f5f5f5; transform: translateX(-8px); }
+    .home-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+    .home-name {
+      font-family: 'Abril Fatface', serif; font-size: clamp(52px, 8vw, 96px);
+      color: #f5f5f5; text-transform: uppercase; line-height: 0.88; letter-spacing: 0.01em;
+    }
+    .home-name em { font-style: italic; color: var(--accent-light); }
+    .home-tagline { font-size: 12px; font-weight: 300; color: rgba(245,245,245,0.42); max-width: 220px; line-height: 1.8; text-align: right; }
+    .scroll-hint {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      font-size: 9px; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(245,245,245,0.22); cursor: pointer; z-index: 2; background: none; border: none;
+      font-family: 'Inter', sans-serif; animation: float 2.5s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(-5px);} }
+
+    /* OVERVIEW */
+    #overview { background: var(--bg); min-height: 100vh; border-top: 0.5px solid var(--border); }
+    .ov-inner { display: grid; grid-template-columns: 220px 1fr; gap: 64px; padding: 80px 40px 100px; max-width: 980px; }
+    .ov-photo-wrap { display: flex; flex-direction: column; gap: 16px; }
+    .ov-photo { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 4px; filter: grayscale(20%); }
+    .ov-photo-ph {
+      width: 100%; aspect-ratio: 3/4; background: var(--card); border: 0.5px solid var(--border);
+      border-radius: 4px; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #bbb; font-style: italic; text-align: center; padding: 16px;
+    }
+    .ov-bio { font-size: 13px; font-weight: 400; color: #555; line-height: 1.75; }
+    .ov-link { font-size: 12px; font-weight: 500; color: var(--accent); text-decoration: none; }
+    .ov-content { display: flex; flex-direction: column; gap: 44px; padding-top: 4px; }
+    .ov-block-title { font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+    .ov-item { display: flex; gap: 14px; margin-bottom: 12px; }
+    .ov-num { font-size: 10px; font-weight: 400; color: #ccc; min-width: 18px; padding-top: 2px; }
+    .ov-text { font-size: 13px; font-weight: 400; color: #333; line-height: 1.65; }
+    .ov-text a { color: var(--accent); text-decoration: underline; text-decoration-color: rgba(58,90,170,0.3); text-underline-offset: 3px; }
+
+    /* INNER NAV */
+    .inner-nav {
+      position: sticky; top: 0; z-index: 10; padding: 16px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(245,245,245,0.94); backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--border);
+    }
+    .nav-home { font-size: 12px; font-weight: 400; color: #bbb; cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; transition: color 0.2s; }
+    .nav-home:hover { color: var(--ink); }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-link { font-size: 12px; font-weight: 400; color: #bbb; cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; transition: color 0.2s; letter-spacing: 0.02em; }
+    .nav-link:hover { color: #555; }
+    .nav-link.active { color: var(--ink); }
+
+    /* INNER CONTENT */
+    .inner-content { padding: 52px 40px 100px; max-width: 760px; }
+    .page-label { font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 14px; color: var(--accent); }
+    .page-title { font-size: clamp(26px, 4vw, 38px); font-weight: 400; color: var(--ink); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .page-subtitle { font-size: 14px; font-weight: 400; color: var(--muted); max-width: 500px; line-height: 1.8; }
+    .page-attr { font-size: 12px; font-weight: 300; color: #bbb; margin-top: -6px; margin-bottom: 10px; }
+    .divider { height: 0.5px; background: var(--border); margin: 36px 0; }
+
+    /* RESEARCH — animated cards */
+    .research-card {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+      margin-bottom: 0;
+    }
+    .research-card.visible { opacity: 1; transform: translateY(0); }
+
+    .r-number {
+      font-family: 'Abril Fatface', serif; font-size: 80px; color: rgba(58,90,170,0.08);
+      line-height: 1; letter-spacing: -0.02em; margin-bottom: -20px;
+    }
+    .r-field { font-size: 9px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .r-title { font-size: 24px; font-weight: 500; color: var(--ink); line-height: 1.2; margin-bottom: 14px; letter-spacing: -0.01em; }
+    .r-desc { font-size: 13px; font-weight: 400; color: #555; line-height: 1.85; max-width: 600px; margin-bottom: 16px; }
+    .r-details { display: flex; gap: 20px; flex-wrap: wrap; padding: 10px 14px; background: var(--card); border-radius: 7px; margin-bottom: 14px; }
+    .r-dl { font-size: 8px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #bbb; margin-bottom: 2px; }
+    .r-dv { font-size: 11px; font-weight: 400; color: #333; }
+    .doc-ph { font-size: 12px; color: #ccc; font-style: italic; padding: 12px 16px; border: 0.5px dashed var(--border); border-radius: 7px; }
+
+    /* PROJECTS */
+    .proj-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .proj-type { font-size: 9px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); }
+    .proj-status { font-size: 10px; font-weight: 400; padding: 2px 9px; border-radius: 20px; }
+    .s-active { background: rgba(58,106,74,0.08); color: #3a6a4a; }
+    .s-review { background: rgba(58,90,170,0.08); color: var(--accent); }
+    .proj-title { font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 8px; }
+    .proj-lead { font-size: 13px; font-weight: 400; color: var(--muted); line-height: 1.65; max-width: 500px; margin-bottom: 18px; }
+    .proj-img-ph { width: 100%; height: 180px; background: var(--card); border: 0.5px dashed var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #ccc; font-style: italic; margin-bottom: 20px; }
+    .proj-body { display: grid; grid-template-columns: 1fr 190px; gap: 32px; margin-bottom: 16px; }
+    .proj-desc p { font-size: 13px; font-weight: 400; color: #555; line-height: 1.85; margin-bottom: 12px; }
+    .proj-dl { font-size: 8px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #bbb; margin-bottom: 3px; }
+    .proj-dv { font-size: 12px; font-weight: 400; color: #444; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 0.5px solid var(--border); }
+    .proj-doc-ph { font-size: 12px; color: #ccc; font-style: italic; padding: 12px 16px; border: 0.5px dashed var(--border); border-radius: 7px; }
+
+    /* WRITING */
+    .w-type { font-size: 9px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); }
+    .w-award { font-size: 12px; font-weight: 400; color: var(--accent); margin-top: 4px; }
+    .w-title { font-size: 20px; font-weight: 500; color: var(--ink); line-height: 1.2; margin-top: 8px; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .w-desc { font-size: 13px; font-weight: 400; color: #555; margin-bottom: 12px; line-height: 1.85; max-width: 580px; }
+    .w-excerpt { border-left: 2px solid var(--accent); padding: 4px 0 4px 18px; margin: 12px 0; }
+    .w-excerpt p { font-size: 13px; font-weight: 400; color: #777; line-height: 1.75; max-width: 520px; font-style: italic; }
+    .w-link { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: var(--accent); text-decoration: none; }
+    .w-link:hover { color: var(--accent-light); }
+    .w-note { font-size: 13px; font-weight: 400; font-style: italic; color: #bbb; line-height: 1.7; }
+
+    /* ACTIVITIES */
+    .act-sec-label { font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+    .act-item {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 32px; padding: 32px 0; border-bottom: 0.5px solid var(--border);
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.6s cubic-bezier(0.4,0,0.2,1), transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+    .act-item.visible { opacity: 1; transform: translateY(0); }
+    .act-item:last-child { border-bottom: none; }
+    .act-info { display: flex; flex-direction: column; justify-content: flex-start; }
+    .act-title { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+    .act-org { font-size: 11px; font-weight: 400; color: #aaa; margin-bottom: 8px; }
+    .act-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+    .act-years { font-size: 10px; font-weight: 400; color: #ccc; }
+    .act-tag { font-size: 9px; font-weight: 400; color: var(--accent); background: rgba(58,90,170,0.07); border-radius: 20px; padding: 2px 9px; }
+    .act-desc { font-size: 12px; font-weight: 400; color: #555; line-height: 1.75; }
+    .act-link { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: var(--accent); text-decoration: none; cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; padding: 0; }
+    .act-honors { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .act-honor { font-size: 12px; font-weight: 400; color: #555; padding-left: 12px; position: relative; line-height: 1.5; }
+    .act-honor::before { content: '—'; position: absolute; left: 0; color: var(--accent); font-size: 10px; }
+    .honor-note { font-size: 10px; color: #aaa; font-style: italic; }
+
+    /* PHOTO GALLERY */
+    .act-gallery { display: flex; flex-direction: column; gap: 8px; }
+    .gallery-main {
+      width: 100%; aspect-ratio: 4/3; background: var(--card);
+      border: 0.5px dashed var(--border); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #ccc; font-style: italic; text-align: center; padding: 12px;
+      overflow: hidden;
+    }
+    .gallery-main img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+    .gallery-thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .gallery-thumb {
+      aspect-ratio: 1; background: var(--card); border: 0.5px dashed var(--border);
+      border-radius: 5px; display: flex; align-items: center; justify-content: center;
+      font-size: 9px; color: #ccc; font-style: italic; text-align: center; padding: 4px;
+      overflow: hidden; cursor: pointer;
+    }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; }
+
+    @media (max-width: 768px) {
+      .home-ui { padding: 20px 24px; }
+      .home-name { font-size: 48px; }
+      .home-tagline { display: none; }
+      .ov-inner { grid-template-columns: 1fr; gap: 32px; padding: 48px 24px 64px; }
+      .inner-nav { padding: 14px 24px; }
+      .inner-content { padding: 36px 24px 64px; }
+      .proj-body { grid-template-columns: 1fr; }
+      .act-item { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-top">
-      <a href="/portfolio-website/index.html" class="sidebar-name">
-        <span class="name-lydia">Lydia Yeeun</span>
-        <span class="name-choi">Choi</span>
-      </a>
+<!-- INTRO -->
+<div id="intro">
+  <div id="iname"><span id="cur"></span></div>
+</div>
+
+<!-- HOME -->
+<div class="page active" id="home">
+  <div class="home-photo">
+    <img src="hero.jpg" alt="Lydia Yeeun Choi" />
+  </div>
+  <div class="home-overlay"></div>
+  <div class="home-ui">
+    <div class="home-wordmark">lydia yeeun choi</div>
+    <div class="home-center">
+      <nav class="home-nav">
+        <button class="home-nav-item" onclick="go('research')">research</button>
+        <button class="home-nav-item" onclick="go('projects')">projects</button>
+        <button class="home-nav-item" onclick="go('writing')">writing</button>
+        <button class="home-nav-item" onclick="go('activities')">activities</button>
+      </nav>
     </div>
-    <ul class="nav-links">
-      <li><a href="/portfolio-website/index.html" class="nav-link active">Home</a></li>
-      <li><a href="/portfolio-website/research.html" class="nav-link">Research</a></li>
-      <li><a href="/portfolio-website/projects.html" class="nav-link">Projects</a></li>
-      <li><a href="/portfolio-website/writing.html" class="nav-link">Writing</a></li>
-      <li><a href="/portfolio-website/activities.html" class="nav-link">Activities</a></li>
-    </ul>
-    <div class="sidebar-footer">
-      <a href="https://github.com/lychoi0809" target="_blank" class="sidebar-link">GitHub ↗</a>
+    <div class="home-bottom">
+      <div class="home-name">LYDIA<br><em>Yeeun</em><br>CHOI</div>
+      <p class="home-tagline">i study language because i believe it holds the shape of what we value, what we lose, and who we might become.</p>
+    </div>
+  </div>
+  <button class="scroll-hint" onclick="go('overview')">scroll ↓</button>
+</div>
+
+<!-- OVERVIEW -->
+<div class="page" id="overview">
+  <nav class="inner-nav">
+    <button class="nav-home" onclick="go('home')">← lydia yeeun choi</button>
+    <div class="nav-links">
+      <button class="nav-link active">overview</button>
+      <button class="nav-link" onclick="go('research')">research</button>
+      <button class="nav-link" onclick="go('projects')">projects</button>
+      <button class="nav-link" onclick="go('writing')">writing</button>
+      <button class="nav-link" onclick="go('activities')">activities</button>
     </div>
   </nav>
-
-  <header class="mobile-header">
-    <a href="/portfolio-website/index.html" class="mobile-name">Lydia Yeeun Choi</a>
-    <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
-  </header>
-
-  <main class="main">
-
-    <section class="hero">
-      <div class="hero-intro">
-        <div class="hero-photo-placeholder">
-          <span>Your photo here</span>
-        </div>
-        <div class="hero-text">
-          <h1 class="hero-name">
-            Lydia<br>
-            <span class="hero-name-italic">Yeeun</span><br>
-            Choi
-          </h1>
-        </div>
+  <div class="ov-inner">
+    <div class="ov-photo-wrap">
+      <div class="ov-photo-ph">[ add a portrait photo here ]</div>
+      <p class="ov-bio">linguistics student, singer, performer, choir director, researcher, and student council president based in seoul, south korea. my work lives at the intersection of language, identity, and community.</p>
+      <p class="ov-bio" style="margin-top:8px;">whether i'm on stage, in the field, or deep in a corpus, i am driven by wonder for the unknown and a deep love for the world.</p>
+      <a class="ov-link" href="https://github.com/lychoi0809" target="_blank">github ↗</a>
+    </div>
+    <div class="ov-content">
+      <div>
+        <div class="ov-block-title">what i'm working on</div>
+        <div class="ov-item"><span class="ov-num">01</span><span class="ov-text">writing an igbo language textbook for children in a nigerian community in korea, reconnecting them with a language their families carry from home</span></div>
+        <div class="ov-item"><span class="ov-num">02</span><span class="ov-text">founding and directing moonlight children's choir, a choir for refugee and migrant children in korea built on the belief that music is one of the most honest languages we share</span></div>
+        <div class="ov-item"><span class="ov-num">03</span><span class="ov-text">researching korean–english musical theater translation and what gets lost when meaning must survive across both languages and melody</span></div>
+        <div class="ov-item"><span class="ov-num">04</span><span class="ov-text">preparing for the garcia summer research program at stony brook university</span></div>
+        <div class="ov-item"><span class="ov-num">05</span><span class="ov-text">proposing my school's first student lounge, because students deserve a space that's actually theirs</span></div>
+        <div class="ov-item"><span class="ov-num">06</span><span class="ov-text">self-studying latin, because dead languages have a lot to say</span></div>
       </div>
-      <p class="hero-tagline">I study language because I believe it holds the shape of what we value, what we lose, and who we might become.</p>
-      <div class="hero-tags">
-        <span class="tag">Language & Identity</span>
-        <span class="tag">Music & Theater</span>
-        <span class="tag">Community</span>
-        <span class="tag">Research</span>
-        <span class="tag">Science</span>
+      <div>
+        <div class="ov-block-title">what i think about</div>
+        <div class="ov-item"><span class="ov-num">01</span><span class="ov-text">what gets lost in translation, not just words but the cultural logic underneath them</span></div>
+        <div class="ov-item"><span class="ov-num">02</span><span class="ov-text">how language preserves or erases identity, and what it means to grow up between languages</span></div>
+        <div class="ov-item"><span class="ov-num">03</span><span class="ov-text">how music creates belonging in ways that don't require fluency or citizenship</span></div>
+        <div class="ov-item"><span class="ov-num">04</span><span class="ov-text">how small communities, diaspora groups, refugee families, school hallways, quietly change the world</span></div>
+        <div class="ov-item"><span class="ov-num">05</span><span class="ov-text">what it means to use knowledge, really use it, to make something better</span></div>
       </div>
-    </section>
+      <div>
+        <div class="ov-block-title">what i make</div>
+        <div class="ov-item"><span class="ov-num">01</span><span class="ov-text">linguistics research on translation perception, 500 years of korean semantic change, and what ai can and can't do with language</span></div>
+        <div class="ov-item"><span class="ov-num">02</span><span class="ov-text">award-winning essays on geopolitics, ecology, and the philosophy of translation (<a href="#" onclick="event.preventDefault();go('writing')">read them here</a>)</span></div>
+        <div class="ov-item"><span class="ov-num">03</span><span class="ov-text">performances, lead roles in theater, soprano section leader, carnegie hall</span></div>
+        <div class="ov-item"><span class="ov-num">04</span><span class="ov-text">community, a choir, a textbook, a student lounge, and phoenixtown</span></div>
+        <div class="ov-item"><span class="ov-num">05</span><span class="ov-text">poetry, written for the pleasure of it and to figure out what i'm actually feeling</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESEARCH -->
+<div class="page" id="research">
+  <nav class="inner-nav">
+    <button class="nav-home" onclick="go('home')">← lydia yeeun choi</button>
+    <div class="nav-links">
+      <button class="nav-link active">research</button>
+      <button class="nav-link" onclick="go('projects')">projects</button>
+      <button class="nav-link" onclick="go('writing')">writing</button>
+      <button class="nav-link" onclick="go('activities')">activities</button>
+    </div>
+  </nav>
+  <div class="inner-content">
+    <div class="page-label">research</div>
+    <h1 class="page-title">inquiry is my way of loving the world.</h1>
+    <p class="page-subtitle">from historical korean corpora to invasive species in the dmz, my research follows curiosity across disciplines.</p>
+    <div class="divider"></div>
+
+    <article class="research-card">
+      <div class="r-number">01</div>
+      <div class="r-field">linguistics · translation studies</div>
+      <h2 class="r-title">Bilingual Evaluation of Tone and Emotional Nuance in Korean–English Translation: Human vs. AI</h2>
+      <p class="r-desc">Investigated how Korean–English bilinguals evaluate translation quality across human and AI outputs. Conducted Likert-style ratings and open-ended responses with 20 participants evaluating a Korean folktale. Found that participants prioritized emotional authenticity over literal accuracy, with only 60% correctly identifying AI involvement, suggesting translation quality depends on how each approach handles specific cultural challenges, not whether it was human or machine-produced.</p>
+      <div class="r-details">
+        <div><div class="r-dl">field</div><div class="r-dv">psycholinguistics · translation studies</div></div>
+        <div><div class="r-dl">languages</div><div class="r-dv">korean, english</div></div>
+        <div><div class="r-dl">method</div><div class="r-dv">likert ratings · open-ended response</div></div>
+        <div><div class="r-dl">status</div><div class="r-dv">completed</div></div>
+      </div>
+      <div class="doc-ph">[ upload your paper or abstract here ]</div>
+    </article>
 
     <div class="divider"></div>
 
-    <section class="section" id="about">
-      <div class="section-label">About</div>
-      <div class="about-text">
-        <p class="about-lead">I want to use knowledge to change the world for the better — and I believe that means following curiosity wherever it leads, across disciplines, communities, and languages.</p>
-        <p class="about-body">I'm a linguistics student, singer, performer, choir director, researcher, and student council president based in Seoul, South Korea. My work lives at the intersection of language, identity, and community, from writing an Igbo language textbook to support children reconnecting with their roots to conducting research spanning Korean historical linguistics to translation cognition.</p>
-        <p class="about-body">Whether I'm on stage, in the field, or deep in a corpus, I am driven by wonder for the unknown and a deep love for the world.</p>
+    <article class="research-card">
+      <div class="r-number">02</div>
+      <div class="r-field">linguistics · corpus · historical</div>
+      <h2 class="r-title">Frequency Accelerates Semantic Change: Evidence from 500 Years of Korean</h2>
+      <p class="r-desc">Challenged the "law of conformity," the long-held assumption that high-frequency words resist semantic change. Trained diachronic word embeddings on historical Korean corpora spanning the 15th to 20th centuries and found the opposite: high-frequency words changed more, not less. Validated findings across six robustness controls and an English replication, linking the reversal to grammaticalization and semantic bleaching processes unique to Korean typology.</p>
+      <div class="r-details">
+        <div><div class="r-dl">field</div><div class="r-dv">historical linguistics · corpus linguistics</div></div>
+        <div><div class="r-dl">language</div><div class="r-dv">korean + english replication</div></div>
+        <div><div class="r-dl">timespan</div><div class="r-dv">15th–20th century · 500 years</div></div>
+        <div><div class="r-dl">status</div><div class="r-dv">completed</div></div>
       </div>
-    </section>
+      <div class="doc-ph">[ upload your paper here ]</div>
+    </article>
 
     <div class="divider"></div>
 
-    <section class="section">
-      <div class="section-label">Featured Work</div>
-      <div class="featured-grid">
-
-        <a href="/portfolio-website/projects.html#igbo" class="featured-card featured-large">
-          <div class="featured-card-label">Project · Ongoing</div>
-          <h2 class="featured-card-title">Igbo Language Textbook</h2>
-          <p class="featured-card-desc">A textbook created to support Igbo heritage language classes in Seoul — written for children born in Korea whose native languages are Korean and English, helping them reconnect with Igbo identity and culture.</p>
-          <span class="featured-link">View project →</span>
-        </a>
-
-        <a href="/portfolio-website/projects.html#moonlight" class="featured-card">
-          <div class="featured-card-label">Project · Ongoing</div>
-          <h2 class="featured-card-title">Moonlight Children's Choir</h2>
-          <p class="featured-card-desc">A choir for refugee and migrant children in Seoul, which I founded and direct.</p>
-          <span class="featured-link">View project →</span>
-        </a>
-
-        <a href="/portfolio-website/research.html#ai-translation" class="featured-card">
-          <div class="featured-card-label">Research · 2024</div>
-          <h2 class="featured-card-title">Human vs. AI Translation Perception</h2>
-          <p class="featured-card-desc">A bilingual study on how readers evaluate tone and emotional nuance in Korean–English translation.</p>
-          <span class="featured-link">Read more →</span>
-        </a>
-
-        <a href="/portfolio-website/writing.html" class="featured-card">
-          <div class="featured-card-label">Writing</div>
-          <h2 class="featured-card-title">Essays & Personal Writing</h2>
-          <p class="featured-card-desc">Personal essays, including my Common App essay and supplemental writing.</p>
-          <span class="featured-link">Read →</span>
-        </a>
-
+    <article class="research-card">
+      <div class="r-number">03</div>
+      <div class="r-field">ecology · environmental science</div>
+      <h2 class="r-title">Characteristics and Species Diversity of <em>S. angulatus</em> Colonies in the Imjin River Basin of the Western Civilian Control Line</h2>
+      <p class="r-desc">Conducted field research in the western civilian control line to analyze the spread and ecological impact of bur cucumber (<em>Sicyos angulatus</em>), an invasive species threatening native riparian vegetation across South Korea. Surveyed three habitat types along the Imjin River and found the species concentrated in riverbank and forest-edge environments. Results contribute to conservation understanding of one of the world's most ecologically unique and understudied landscapes.</p>
+      <div class="r-details">
+        <div><div class="r-dl">field</div><div class="r-dv">ecology · conservation biology</div></div>
+        <div><div class="r-dl">species</div><div class="r-dv"><em>Sicyos angulatus</em></div></div>
+        <div><div class="r-dl">location</div><div class="r-dv">imjin river · western ccl</div></div>
+        <div><div class="r-dl">status</div><div class="r-dv">completed</div></div>
       </div>
-    </section>
+      <div class="doc-ph">[ upload your research report or poster here ]</div>
+    </article>
+  </div>
+</div>
 
-  </main>
+<!-- PROJECTS -->
+<div class="page" id="projects">
+  <nav class="inner-nav">
+    <button class="nav-home" onclick="go('home')">← lydia yeeun choi</button>
+    <div class="nav-links">
+      <button class="nav-link" onclick="go('research')">research</button>
+      <button class="nav-link active">projects</button>
+      <button class="nav-link" onclick="go('writing')">writing</button>
+      <button class="nav-link" onclick="go('activities')">activities</button>
+    </div>
+  </nav>
+  <div class="inner-content">
+    <div class="page-label">projects</div>
+    <h1 class="page-title">making change, one idea at a time.</h1>
+    <p class="page-subtitle">each of these began with a question i couldn't let go of, or a need i saw in a community i love.</p>
+    <div class="divider"></div>
 
-  <script src="nav.js"></script>
+    <article id="igbo">
+      <div class="proj-meta">
+        <span class="proj-type">language preservation · community</span>
+        <span class="proj-status s-active">ongoing</span>
+      </div>
+      <h2 class="proj-title">Igbo Language Textbook</h2>
+      <p class="proj-lead">a textbook written from scratch to support igbo heritage classes in korea, for children reconnecting with the language their families carry from home.</p>
+      <div class="proj-img-ph">[ add photos of your drafts, the community, or textbook pages here ]</div>
+      <div class="proj-body">
+        <div class="proj-desc">
+          <p>In a Nigerian community in Korea, many parents speak Igbo and English fluently while their children, raised here and educated in Korean schools, have grown up with Korean as one of their strongest languages. Some speak little or no Igbo. Community members recently started Igbo classes to address this, but beginner-level teaching materials simply don't exist for this context.</p>
+          <p>I'm developing those materials. Having spent time with the children and families, I'm building something that meets them where they are: designed around the languages they already know, the culture they're reconnecting with, and the reality of learning a heritage language as a child growing up between worlds.</p>
+        </div>
+        <div>
+          <div class="proj-dl">type</div><div class="proj-dv">educational materials</div>
+          <div class="proj-dl">languages</div><div class="proj-dv">igbo, korean, english</div>
+          <div class="proj-dl">community</div><div class="proj-dv">igbo diaspora, korea</div>
+          <div class="proj-dl">status</div><div style="font-size:12px;color:#444;margin-bottom:12px;">in progress</div>
+        </div>
+      </div>
+      <div class="proj-doc-ph">[ link to a sample chapter or working document here ]</div>
+    </article>
+
+    <div class="divider"></div>
+
+    <article id="moonlight">
+      <div class="proj-meta">
+        <span class="proj-type">community · music</span>
+        <span class="proj-status s-active">ongoing</span>
+      </div>
+      <h2 class="proj-title">Moonlight Children's Choir</h2>
+      <p class="proj-lead">a choir for refugee and migrant children in korea, which i founded and direct, built on the belief that music is one of the most honest languages we share.</p>
+      <div class="proj-img-ph">[ add photos of rehearsals or performances here ]</div>
+      <div class="proj-body">
+        <div class="proj-desc">
+          <p>Children who have moved across borders, who carry more than one language and more than one sense of home, deserve a space where all of that is welcome. I founded Moonlight Children's Choir to be that space: a place to be creative, expressive, and fully yourself, finding hope and song and laughter together even when things are rough.</p>
+          <p>The name was chosen together with the children. Moonlight because the choir is meant to shine in the darkness. I direct, arrange, and sometimes write for the ensemble, which rehearses regularly and performs publicly.</p>
+        </div>
+        <div>
+          <div class="proj-dl">role</div><div class="proj-dv">founder & director</div>
+          <div class="proj-dl">community</div><div class="proj-dv">refugee & migrant children, korea</div>
+          <div class="proj-dl">status</div><div style="font-size:12px;color:#444;margin-bottom:12px;">active</div>
+        </div>
+      </div>
+      <div class="proj-doc-ph">[ add performance recordings or press here ]</div>
+    </article>
+  </div>
+</div>
+
+<!-- WRITING -->
+<div class="page" id="writing">
+  <nav class="inner-nav">
+    <button class="nav-home" onclick="go('home')">← lydia yeeun choi</button>
+    <div class="nav-links">
+      <button class="nav-link" onclick="go('research')">research</button>
+      <button class="nav-link" onclick="go('projects')">projects</button>
+      <button class="nav-link active">writing</button>
+      <button class="nav-link" onclick="go('activities')">activities</button>
+    </div>
+  </nav>
+  <div class="inner-content">
+    <div class="page-label">writing</div>
+    <h1 class="page-title">"writing is really a way of thinking."</h1>
+    <p class="page-attr">— toni morrison</p>
+    <p class="page-subtitle">academic essays, personal writing, and everything in between.</p>
+    <div class="divider"></div>
+
+    <article>
+      <div class="w-type">personal essay</div>
+      <div class="w-award">🏆 rachel carson sense of wonder / sense of the wild writing contest — 1st place</div>
+      <h2 class="w-title">Where Life Endures: Discoveries in the DMZ</h2>
+      <p class="w-desc">While conducting field research on invasive species in the Korean Demilitarized Zone, encountered an image that stopped me: a rusted land mine with a white lily growing through it. Wrote an essay exploring what it means to find life, leopard cats, egrets, greenfinches, a startled water deer, flourishing in a landscape shaped by decades of war and separation.</p>
+      <div class="w-excerpt"><p>"an instrument of death, woven through with a lovely little touch of life."</p></div>
+      <a class="w-link" href="https://docs.google.com/document/d/1n8P3-3ZFZrpMm45bUTFeEahgJjgm0BKKIABG2rrhyUo/edit?usp=sharing" target="_blank">read the full essay ↗</a>
+    </article>
+
+    <div class="divider"></div>
+
+    <article>
+      <div class="w-type">academic essay · international relations</div>
+      <div class="w-award">🏆 harvard international review academic writing contest — gold medal</div>
+      <h2 class="w-title">Lithium as Leverage: Bolivia's Role in the 21st-Century Power Struggle</h2>
+      <p class="w-desc">Analyzed how Bolivia, one of Latin America's poorest countries, has leveraged its position as home to the world's largest lithium reserves to gain disproportionate geopolitical influence amid a global scramble for battery materials. Argued that Bolivia is not a passive prize in great power competition but an active player dictating extraction terms and potentially a model for other resource-rich emerging states.</p>
+      <a class="w-link" href="https://docs.google.com/document/d/1Z_1UYn2EzzuRtd7-LaW-Kzdueis3tG5QJ9e4FeWUBV4/edit?usp=sharing" target="_blank">read the full essay ↗</a>
+    </article>
+
+    <div class="divider"></div>
+
+    <article>
+      <div class="w-type">academic essay · linguistics</div>
+      <div class="w-award">✦ minds underground essay competition — highly commended</div>
+      <h2 class="w-title">What Is Lost When Translating Literature from One Language to Another?</h2>
+      <p class="w-desc">Starting from the experience of reading Yoon Dong-ju's poems first in Korean and then in English, and the quiet disappointment of the second encounter, examined how grammar, honorifics, structural logic, and cultural implication create meaning that cannot survive intact across languages. Drew on Korean, Japanese, Chinese, and French literature to argue that translators must always choose between fidelity to words or fidelity to feeling.</p>
+      <a class="w-link" href="https://docs.google.com/document/d/1xhORW2DhKeAAbs8bIv7JXfERP6JVX1SEdObZOPbMJ9Y/edit?usp=sharing" target="_blank">read the full essay ↗</a>
+    </article>
+
+    <div class="divider"></div>
+    <p class="w-note">more writing available on request, including personal essays. some pieces are kept private — reach out if you'd like to read something specific.</p>
+  </div>
+</div>
+
+<!-- ACTIVITIES -->
+<div class="page" id="activities">
+  <nav class="inner-nav">
+    <button class="nav-home" onclick="go('home')">← lydia yeeun choi</button>
+    <div class="nav-links">
+      <button class="nav-link" onclick="go('research')">research</button>
+      <button class="nav-link" onclick="go('projects')">projects</button>
+      <button class="nav-link" onclick="go('writing')">writing</button>
+      <button class="nav-link active">activities</button>
+    </div>
+  </nav>
+  <div class="inner-content" style="max-width:960px;">
+    <div class="page-label">activities</div>
+    <h1 class="page-title">how i spend my time.</h1>
+    <p class="page-subtitle">leadership, performance, community, and the things i do because i can't imagine not doing them.</p>
+    <div class="divider"></div>
+
+    <div class="act-sec-label">leadership</div>
+
+    <div class="act-item">
+      <div class="act-info">
+        <div class="act-title">Student Council President</div>
+        <div class="act-org">[ your school ]</div>
+        <div class="act-meta"><span class="act-years">[ years ]</span><span class="act-tag">leadership</span></div>
+        <div class="act-desc">Elected to represent and lead the student body, advocating for student needs, organizing school-wide initiatives, and working with faculty to drive meaningful change. Currently leading the proposal to establish the school's first student lounge.</div>
+      </div>
+      <div class="act-gallery">
+        <div class="gallery-main">[ add a photo here ]</div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-info">
+        <div class="act-title">Phoenix Ambassador</div>
+        <div class="act-org">[ your school ]</div>
+        <div class="act-meta"><span class="act-years">[ years ]</span><span class="act-tag">community</span></div>
+        <div class="act-desc">Selected to support students who are or could be slipping through the cracks: new students, freshmen, anyone who needs a hand. Led new student and 9th grade orientation, homecoming, and Phoenixtown, a four-day off-campus retreat for around 100 students centered on honest conversations about identity, stereotypes, gender, relationships, and community.</div>
+      </div>
+      <div class="act-gallery">
+        <div class="gallery-main">[ add a photo here ]</div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-info">
+        <div class="act-title">Student Lounge — Proposer & Lead</div>
+        <div class="act-org">[ your school ]</div>
+        <div class="act-meta"><span class="act-years">[ year ] – present</span><span class="act-tag">advocacy</span></div>
+        <div class="act-desc">Identified that students had no dedicated informal gathering space, the library was perpetually overcrowded serving dual study and social functions. Researched how peer institutions maintain student lounges as a core part of campus life and proposed transforming an unused school location into a comfortable, purposefully student-centered hub. Proposal currently under administrative review.</div>
+      </div>
+      <div class="act-gallery">
+        <div class="gallery-main">[ add proposal docs or mockups here ]</div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="act-sec-label">music</div>
+
+    <div class="act-item">
+      <div class="act-info">
+        <div class="act-title">Phoenix Chamber Singers — Soprano Section Leader</div>
+        <div class="act-org">[ your school ] · auditioned ensemble</div>
+        <div class="act-meta"><span class="act-years">[ years ]</span><span class="act-tag">music</span></div>
+        <div class="act-desc">Lead soprano section rehearsals and support the director in performance preparation for the school's top auditioned choir.</div>
+        <div class="act-honors">
+          <div class="act-honor">kimea national honor choir — 3× <span class="honor-note">(soloist)</span></div>
+          <div class="act-honor">amis international honor choir — 3×</div>
+          <div class="act-honor">amis solo/ensemble festival — rating i+ <span class="honor-note">(honor with distinction)</span></div>
+          <div class="act-honor">hps honor choir — performed at carnegie hall</div>
+        </div>
+      </div>
+      <div class="act-gallery">
+        <div class="gallery-main">[ add a performance photo here ]</div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-info">
+        <div class="act-title">Moonlight Children's Choir — Founder & Director</div>
+        <div class="act-org">independent · korea</div>
+        <div class="act-meta"><span class="act-years">[ year ] – present</span><span class="act-tag">community · music</span></div>
+        <div class="act-desc">Founded and direct a choir for refugee and migrant children in Korea.</div>
+        <button class="act-link" onclick="go('projects')">see the full project →</button>
+      </div>
+      <div class="act-gallery">
+        <div class="gallery-main">[ add a rehearsal or performance photo here ]</div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="act-sec-label">theater</div>
+
+    <div class="act-item">
+      <div class="act-info">
+        <div class="act-title">School Theater — Lead Roles & Main Cast</div>
+        <div class="act-org">[ your school ]</div>
+        <div class="act-meta"><span class="act-years">[ years ]</span><span class="act-tag">theater</span></div>
+        <div class="act-desc">Main cast member across multiple productions, <em>Bugsy Malone</em>, <em>A Midsummer Night's Dream</em>, <em>Elf the Musical</em>, and <em>The AI Play</em>, collaborating in vocal, acting, and dance rehearsals.</div>
+      </div>
+      <div class="act-gallery">
+        <div class="gallery-main">[ add a production photo here ]</div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-info">
+        <div class="act-title">Middle School Theatre Club — Mentor & Session Leader</div>
+        <div class="act-org">[ your school ]</div>
+        <div class="act-meta"><span class="act-years">[ years ]</span><span class="act-tag">theater · mentorship</span></div>
+        <div class="act-desc">Led middle school theatre club sessions and mentored younger students in both performance and backstage work, passing on the same encouragement I once needed.</div>
+      </div>
+      <div class="act-gallery">
+        <div class="gallery-main">[ add a photo here ]</div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="act-sec-label">academic programs</div>
+
+    <div class="act-item">
+      <div class="act-info">
+        <div class="act-title">Garcia Summer Research Program</div>
+        <div class="act-org">stony brook university</div>
+        <div class="act-meta"><span class="act-years">summer 2025</span><span class="act-tag">research · science</span></div>
+        <div class="act-desc">Selected for a competitive university-level program placing high school students directly in materials science research labs alongside faculty and graduate students. Attending summer 2025.</div>
+      </div>
+      <div class="act-gallery">
+        <div class="gallery-main">[ add photos after the program ]</div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act-item">
+      <div class="act-info">
+        <div class="act-title">Mathily-Er Summer Mathematics Program</div>
+        <div class="act-org">mathily-er</div>
+        <div class="act-meta"><span class="act-years">summer 2024</span><span class="act-tag">mathematics</span></div>
+        <div class="act-desc">Attended a selective residential program focused on deep mathematical reasoning and proof-writing, focused on genuine mathematical discovery, not competition preparation.</div>
+      </div>
+      <div class="act-gallery">
+        <div class="gallery-main">[ add photos here ]</div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+          <div class="gallery-thumb">[ photo ]</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const PAGES = ['home','overview','research','projects','writing','activities'];
+
+function go(name) {
+  PAGES.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  const el = document.getElementById(name);
+  if (el) { el.classList.add('active'); window.scrollTo(0,0); }
+  document.querySelectorAll('.nav-link').forEach(l => {
+    l.classList.toggle('active', l.textContent.trim() === name);
+  });
+  // trigger scroll animations for new page
+  setTimeout(initScrollAnimations, 50);
+}
+
+// SCROLL ANIMATIONS
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 120);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.research-card:not(.visible), .act-item:not(.visible)').forEach(el => {
+    observer.observe(el);
+  });
+}
+
+// GALLERY click to expand main photo
+document.addEventListener('click', (e) => {
+  const thumb = e.target.closest('.gallery-thumb');
+  if (!thumb) return;
+  const gallery = thumb.closest('.act-gallery');
+  const main = gallery.querySelector('.gallery-main');
+  // swap if both have imgs
+  const mainImg = main.querySelector('img');
+  const thumbImg = thumb.querySelector('img');
+  if (mainImg && thumbImg) {
+    const tmp = mainImg.src;
+    mainImg.src = thumbImg.src;
+    thumbImg.src = tmp;
+  }
+});
+
+// TYPING INTRO
+(function() {
+  const el = document.getElementById('iname');
+  const parts = [{t:'Lydia ',em:false},{t:'Yeeun',em:true},{t:' Choi',em:false}];
+  const full = 'Lydia Yeeun Choi'; let i = 0;
+  function build(n) {
+    let h='',s=0;
+    for(const p of parts){const take=Math.min(p.t.length,Math.max(0,n-s));const c=p.t.slice(0,take);if(c)h+=p.em?`<em>${c}</em>`:c;s+=p.t.length;if(s>=n)break;}
+    return h;
+  }
+  const iv = setInterval(() => {
+    i++; el.innerHTML = build(i)+'<span id="cur"></span>';
+    if(i>=full.length){
+      clearInterval(iv);
+      setTimeout(()=>{
+        const intro=document.getElementById('intro');
+        intro.classList.add('out');
+        setTimeout(()=>{intro.style.display='none'; initScrollAnimations();},900);
+      },600);
+    }
+  }, 85);
+})();
+</script>
 </body>
 </html>
