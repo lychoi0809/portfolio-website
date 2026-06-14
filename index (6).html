@@ -18,8 +18,28 @@
       --card: #ececec;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+    html, body { height: 100%; scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); overflow: hidden; }
+
+    /* PAGE TRANSITION */
+    #transition {
+      position: fixed; inset: 0; background: #0a0c14;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 500; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #transition.show { opacity: 1; pointer-events: all; }
+    #transition.hide { opacity: 0; pointer-events: none; }
+    #t-text {
+      font-family: 'Inter', sans-serif; font-size: clamp(20px, 4vw, 36px);
+      font-weight: 300; color: #f5f5f5; letter-spacing: 0.08em; text-align: center;
+    }
+    #t-text em { font-style: normal; color: var(--accent); }
+    #t-cur {
+      display: inline-block; width: 2px; height: 0.85em;
+      background: var(--accent); margin-left: 3px; vertical-align: middle;
+      animation: blink 0.7s step-end infinite;
+    }
 
     /* INTRO */
     #intro {
@@ -41,12 +61,16 @@
     @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
 
     /* PAGES */
-    .page { display: none; min-height: 100vh; }
-    .page.active { display: block; }
+    .page { display: none; height: 100vh; overflow-y: auto; }
+    .page.active { display: block; background: var(--bg); }
+    #home-wrap.active { display: block; background: transparent; }
+    #home { background: #0a0c14; height: 100vh; overflow: hidden; }
 
     /* HOME */
+    #home-wrap { display: none; }
+    #home-wrap.active { display: block; overflow-y: auto; height: 100vh; }
     #home { position: relative; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-    .home-photo { position: absolute; inset: 0; z-index: 0; }
+    .home-photo { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
     .home-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: brightness(0.5) contrast(1.05); }
     .home-overlay {
       position: absolute; inset: 0; z-index: 1;
@@ -70,17 +94,11 @@
     }
     .home-name em { font-style: italic; color: var(--accent-light); }
     .home-tagline { font-size: 12px; font-weight: 300; color: rgba(245,245,245,0.42); max-width: 220px; line-height: 1.8; text-align: right; }
-    .scroll-hint {
-      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
-      font-size: 9px; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase;
-      color: rgba(245,245,245,0.22); cursor: pointer; z-index: 2; background: none; border: none;
-      font-family: 'Inter', sans-serif; animation: float 2.5s ease-in-out infinite;
-    }
-    @keyframes float { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(-5px);} }
+
 
     /* OVERVIEW */
-    #overview { background: var(--bg); min-height: 100vh; border-top: 0.5px solid var(--border); }
-    .ov-inner { display: grid; grid-template-columns: 220px 1fr; gap: 64px; padding: 80px 40px 100px; max-width: 980px; }
+    #overview { background: var(--bg); min-height: 100vh; border-top: 0.5px solid var(--border); position: relative; z-index: 10; }
+    .ov-inner { display: grid; grid-template-columns: 220px 1fr; gap: 64px; padding: 80px 40px 100px; max-width: 980px; margin: 0 auto 0 15%; }
     .ov-photo-wrap { display: flex; flex-direction: column; gap: 16px; }
     .ov-photo { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 4px; filter: grayscale(20%); }
     .ov-photo-ph {
@@ -98,6 +116,7 @@
     .ov-text a { color: var(--accent); text-decoration: underline; text-decoration-color: rgba(58,90,170,0.3); text-underline-offset: 3px; }
 
     /* INNER NAV */
+    .page:not(#home) { background: var(--bg); position: relative; z-index: 10; }
     .inner-nav {
       position: sticky; top: 0; z-index: 10; padding: 16px 40px;
       display: flex; justify-content: space-between; align-items: center;
@@ -111,7 +130,7 @@
     .nav-link.active { color: var(--ink); }
 
     /* INNER CONTENT */
-    .inner-content { padding: 52px 40px 100px; max-width: 760px; }
+    .inner-content { padding: 52px 40px 100px; max-width: 760px; margin: 0 auto; }
     .page-label { font-size: 9px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 14px; color: var(--accent); }
     .page-title { font-size: clamp(26px, 4vw, 38px); font-weight: 400; color: var(--ink); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 12px; }
     .page-subtitle { font-size: 14px; font-weight: 400; color: var(--muted); max-width: 500px; line-height: 1.8; }
@@ -211,7 +230,8 @@
       .home-name { font-size: 48px; }
       .home-tagline { display: none; }
       .ov-inner { grid-template-columns: 1fr; gap: 32px; padding: 48px 24px 64px; }
-      .inner-nav { padding: 14px 24px; }
+      .page:not(#home) { background: var(--bg); position: relative; z-index: 10; }
+    .inner-nav { padding: 14px 24px; }
       .inner-content { padding: 36px 24px 64px; }
       .proj-body { grid-template-columns: 1fr; }
       .act-item { grid-template-columns: 1fr; }
@@ -224,6 +244,14 @@
 <div id="intro">
   <div id="iname"><span id="cur"></span></div>
 </div>
+
+<!-- TRANSITION OVERLAY -->
+<div id="transition">
+  <div id="t-text"><span id="t-cur"></span></div>
+</div>
+
+<!-- HOME WRAP (home + overview stacked) -->
+<div id="home-wrap" class="page active">
 
 <!-- HOME -->
 <div class="page active" id="home">
@@ -246,21 +274,11 @@
       <p class="home-tagline">i study language because i believe it holds the shape of what we value, what we lose, and who we might become.</p>
     </div>
   </div>
-  <button class="scroll-hint" onclick="go('overview')">scroll ↓</button>
+
 </div>
 
 <!-- OVERVIEW -->
-<div class="page" id="overview">
-  <nav class="inner-nav">
-    <button class="nav-home" onclick="go('home')">← lydia yeeun choi</button>
-    <div class="nav-links">
-      <button class="nav-link active">overview</button>
-      <button class="nav-link" onclick="go('research')">research</button>
-      <button class="nav-link" onclick="go('projects')">projects</button>
-      <button class="nav-link" onclick="go('writing')">writing</button>
-      <button class="nav-link" onclick="go('activities')">activities</button>
-    </div>
-  </nav>
+<div id="overview">
   <div class="ov-inner">
     <div class="ov-photo-wrap">
       <div class="ov-photo-ph">[ add a portrait photo here ]</div>
@@ -298,10 +316,12 @@
   </div>
 </div>
 
+</div><!-- end home-wrap -->
+
 <!-- RESEARCH -->
 <div class="page" id="research">
   <nav class="inner-nav">
-    <button class="nav-home" onclick="go('home')">← lydia yeeun choi</button>
+    <button class="nav-home" onclick="go('home-wrap')">← lydia yeeun choi</button>
     <div class="nav-links">
       <button class="nav-link active">research</button>
       <button class="nav-link" onclick="go('projects')">projects</button>
@@ -366,7 +386,7 @@
 <!-- PROJECTS -->
 <div class="page" id="projects">
   <nav class="inner-nav">
-    <button class="nav-home" onclick="go('home')">← lydia yeeun choi</button>
+    <button class="nav-home" onclick="go('home-wrap')">← lydia yeeun choi</button>
     <div class="nav-links">
       <button class="nav-link" onclick="go('research')">research</button>
       <button class="nav-link active">projects</button>
@@ -432,7 +452,7 @@
 <!-- WRITING -->
 <div class="page" id="writing">
   <nav class="inner-nav">
-    <button class="nav-home" onclick="go('home')">← lydia yeeun choi</button>
+    <button class="nav-home" onclick="go('home-wrap')">← lydia yeeun choi</button>
     <div class="nav-links">
       <button class="nav-link" onclick="go('research')">research</button>
       <button class="nav-link" onclick="go('projects')">projects</button>
@@ -484,7 +504,7 @@
 <!-- ACTIVITIES -->
 <div class="page" id="activities">
   <nav class="inner-nav">
-    <button class="nav-home" onclick="go('home')">← lydia yeeun choi</button>
+    <button class="nav-home" onclick="go('home-wrap')">← lydia yeeun choi</button>
     <div class="nav-links">
       <button class="nav-link" onclick="go('research')">research</button>
       <button class="nav-link" onclick="go('projects')">projects</button>
@@ -492,7 +512,7 @@
       <button class="nav-link active">activities</button>
     </div>
   </nav>
-  <div class="inner-content" style="max-width:960px;">
+  <div class="inner-content" style="max-width:960px; margin: 0 auto;">
     <div class="page-label">activities</div>
     <h1 class="page-title">how i spend my time.</h1>
     <p class="page-subtitle">leadership, performance, community, and the things i do because i can't imagine not doing them.</p>
@@ -673,20 +693,75 @@
 </div>
 
 <script>
-const PAGES = ['home','overview','research','projects','writing','activities'];
+const PAGES = ['home-wrap','research','projects','writing','activities'];
 
-function go(name) {
+const PAGE_PHRASES = {
+  research: "lydia's research.",
+  projects: "lydia's projects.",
+  writing: "lydia's writing.",
+  activities: "lydia's activities."
+};
+
+function typeTransition(phrase, callback) {
+  const overlay = document.getElementById('transition');
+  const el = document.getElementById('t-text');
+  overlay.classList.add('show');
+  el.innerHTML = '<span id="t-cur"></span>';
+  let i = 0;
+  const iv = setInterval(() => {
+    i++;
+    const typed = phrase.slice(0, i);
+    const parts = typed.split("'s ");
+    let html = '';
+    if (parts.length > 1) {
+      html = "<em>" + parts[0] + "'s </em>" + parts[1];
+    } else {
+      html = "<em>" + typed + "</em>";
+    }
+    el.innerHTML = html + '<span id="t-cur"></span>';
+    if (i >= phrase.length) {
+      clearInterval(iv);
+      setTimeout(() => {
+        overlay.classList.remove('show');
+        overlay.classList.add('hide');
+        setTimeout(() => {
+          overlay.classList.remove('hide');
+          callback();
+        }, 300);
+      }, 400);
+    }
+  }, 70);
+}
+
+function showPage(name) {
   PAGES.forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.classList.remove('active');
+    if (el) { el.classList.remove('active'); el.style.display = 'none'; }
   });
   const el = document.getElementById(name);
-  if (el) { el.classList.add('active'); window.scrollTo(0,0); }
+  if (el) {
+    el.style.display = 'block';
+    el.classList.add('active');
+    const pageEl = document.getElementById(name); if(pageEl) pageEl.scrollTop = 0;
+  }
   document.querySelectorAll('.nav-link').forEach(l => {
     l.classList.toggle('active', l.textContent.trim() === name);
   });
-  // trigger scroll animations for new page
   setTimeout(initScrollAnimations, 50);
+}
+
+function go(name) {
+  if (name === 'home' || name === 'home-wrap') {
+    showPage('home-wrap');
+    const pageEl = document.getElementById(name); if(pageEl) pageEl.scrollTop = 0;
+    return;
+  }
+  const phrase = PAGE_PHRASES[name];
+  if (phrase) {
+    typeTransition(phrase, () => showPage(name));
+  } else {
+    showPage(name);
+  }
 }
 
 // SCROLL ANIMATIONS
@@ -740,7 +815,7 @@ document.addEventListener('click', (e) => {
       setTimeout(()=>{
         const intro=document.getElementById('intro');
         intro.classList.add('out');
-        setTimeout(()=>{intro.style.display='none'; initScrollAnimations();},900);
+        setTimeout(()=>{intro.style.display='none'; showPage('home-wrap'); initScrollAnimations();},900);
       },600);
     }
   }, 85);
